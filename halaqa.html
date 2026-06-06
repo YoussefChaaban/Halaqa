@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>حلقة التحفيظ — Halaqa</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0f1117;--surface:#181c26;--surface2:#1e2330;--surface3:#242840;
+  --teal:#2dd4bf;--teal-dim:#1a8a7a;--teal-pale:rgba(45,212,191,0.08);
+  --gold:#f5c842;--gold-dim:#b8941e;
+  --red:#f87171;--red-pale:rgba(248,113,113,0.12);
+  --green:#4ade80;--green-pale:rgba(74,222,128,0.1);
+  --text:#e8eaf0;--muted:#7a8099;--faint:#3a3f52;
+  --radius:10px;--radius-lg:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);font-size:15px}
+
+/* ── LOGIN ── */
+#loginScreen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+}
+.login-card{
+  background:var(--surface);border:1px solid var(--faint);border-radius:var(--radius-lg);
+  padding:2.5rem 2rem;width:100%;max-width:380px;
+}
+.login-card .logo{text-align:center;margin-bottom:2rem}
+.login-card .logo .ar{font-family:'Amiri',serif;font-size:2rem;color:var(--teal);display:block}
+.login-card .logo .en{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em}
+.login-card label{font-size:0.78rem;font-weight:500;color:var(--muted);display:block;margin-bottom:5px}
+.login-card select,.login-card input{
+  width:100%;padding:0.6rem 0.9rem;background:var(--surface2);
+  border:1px solid var(--faint);border-radius:var(--radius);
+  color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.9rem;margin-bottom:1rem;
+}
+.login-card select option{background:var(--surface2)}
+.login-card .pin-row{display:none;margin-bottom:1rem}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:0.6rem 1.25rem;border-radius:var(--radius);
+  font-family:'Tajawal',sans-serif;font-size:0.88rem;font-weight:700;
+  cursor:pointer;border:none;transition:all 0.15s;white-space:nowrap;
+}
+.btn-teal{background:var(--teal);color:#0f1117}.btn-teal:hover{background:#25b8a6}
+.btn-outline{background:transparent;color:var(--teal);border:1px solid var(--teal-dim)}.btn-outline:hover{background:var(--teal-pale)}
+.btn-red{background:var(--red);color:#0f1117}.btn-red:hover{background:#ef4444}
+.btn-sm{padding:0.3rem 0.75rem;font-size:0.78rem}
+.btn-full{width:100%}
+.error-msg{color:var(--red);font-size:0.78rem;text-align:center;margin-bottom:0.75rem;min-height:1.2em}
+
+/* ── APP SHELL ── */
+#app{display:none;height:100vh;flex-direction:column}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;height:54px;background:var(--surface);
+  border-bottom:1px solid var(--faint);flex-shrink:0;
+}
+.topbar .brand{font-family:'Amiri',serif;font-size:1.2rem;color:var(--teal)}
+.topbar .user-pill{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface2);border:1px solid var(--faint);
+  border-radius:20px;padding:4px 12px;font-size:0.78rem;
+}
+.user-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.nav-tabs{
+  display:flex;gap:2px;padding:0 1.5rem;
+  background:var(--surface);border-bottom:1px solid var(--faint);flex-shrink:0;
+}
+.nav-tab{
+  padding:10px 18px;font-size:0.82rem;font-weight:500;cursor:pointer;
+  color:var(--muted);border-bottom:2px solid transparent;
+  transition:all 0.15s;background:none;border-left:none;border-right:none;border-top:none;
+  font-family:'Tajawal',sans-serif;
+}
+.nav-tab.active,.nav-tab:hover{color:var(--teal)}
+.nav-tab.active{border-bottom-color:var(--teal)}
+.page-content{flex:1;overflow-y:auto;padding:1.5rem}
+.view{display:none}.view.active{display:block}
+
+/* ── CARDS / LAYOUT ── */
+.card{background:var(--surface);border:1px solid var(--faint);border-radius:var(--radius-lg);padding:1.25rem}
+.page-hdr{margin-bottom:1.5rem}
+.page-hdr h2{font-size:1.3rem;font-weight:700;font-family:'Amiri',serif}
+.page-hdr p{font-size:0.8rem;color:var(--muted);margin-top:3px}
+.badge{display:inline-block;border-radius:20px;padding:2px 10px;font-size:0.72rem;font-weight:700}
+.badge-green{background:var(--green-pale);color:var(--green)}
+.badge-red{background:var(--red-pale);color:var(--red)}
+.badge-teal{background:var(--teal-pale);color:var(--teal)}
+.badge-gold{background:rgba(245,200,66,0.12);color:var(--gold)}
+
+/* ── QURAN PAGE ── */
+.quran-toolbar{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.quran-toolbar select,.quran-toolbar input[type=number]{
+  padding:0.45rem 0.75rem;background:var(--surface2);border:1px solid var(--faint);
+  border-radius:var(--radius);color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.82rem;
+}
+.quran-toolbar input[type=number]{width:80px}
+.quran-toolbar select option{background:var(--surface2)}
+.quran-layout{display:grid;grid-template-columns:1fr 280px;gap:1.25rem}
+@media(max-width:800px){.quran-layout{grid-template-columns:1fr}}
+.mushaf-wrap{background:var(--surface);border:1px solid var(--faint);border-radius:var(--radius-lg);padding:1.75rem 2.25rem}
+.mushaf-page{direction:rtl}
+.surah-hdr{
+  text-align:center;font-family:'Amiri',serif;font-size:1rem;font-weight:700;
+  padding:6px 0;border-top:1px solid var(--faint);border-bottom:1px solid var(--faint);
+  margin-bottom:12px;color:var(--gold);
+}
+.basmala{text-align:center;font-family:'Amiri Quran','Amiri',serif;font-size:1.4rem;margin-bottom:10px;line-height:2.1;color:var(--text)}
+.qline{
+  font-family:'Amiri Quran','Amiri',serif;font-size:1.25rem;line-height:2.6;
+  text-align:justify;direction:rtl;color:var(--text);padding:2px 0;
+  display:block;
+}
+.qword{
+  display:inline;cursor:default;border-radius:3px;
+  padding:1px 2px;transition:background 0.1s;
+}
+.qword.wrd-mistake{
+  background:var(--red-pale);color:var(--red);
+  border-radius:4px;outline:1px solid rgba(248,113,113,0.4);
+}
+.mark-mode-active .qword:hover{
+  background:rgba(245,200,66,0.18);cursor:crosshair;
+}
+.page-nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:1rem}
+.mistake-panel{background:var(--surface);border:1px solid var(--faint);border-radius:var(--radius-lg);padding:1.1rem;height:fit-content;position:sticky;top:0}
+.mistake-panel h3{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--faint)}
+.mistake-item{background:var(--red-pale);border:1px solid rgba(248,113,113,0.2);border-radius:6px;padding:0.6rem 0.75rem;margin-bottom:0.5rem;font-size:0.78rem}
+.mistake-item .mi-line{color:var(--red);font-weight:700;font-size:0.68rem;text-transform:uppercase;margin-bottom:2px}
+.mistake-item .mi-note{color:var(--text);margin-bottom:4px}
+.mistake-item .mi-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.72rem;font-family:'Tajawal',sans-serif}
+.mistake-item .mi-del:hover{color:var(--red)}
+.mark-mode-bar{
+  background:var(--surface3);border:1px solid var(--gold-dim);border-radius:var(--radius);
+  padding:0.6rem 0.9rem;margin-bottom:1rem;display:none;
+  font-size:0.8rem;color:var(--gold);align-items:center;gap:0.75rem;
+}
+.mark-mode-bar.active{display:flex}
+.note-input{width:100%;padding:0.4rem 0.6rem;background:var(--surface2);border:1px solid var(--faint);border-radius:6px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.8rem;margin-bottom:0.5rem;resize:vertical;min-height:56px}
+
+/* ── ATTENDANCE ── */
+.att-controls{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.att-table-wrap{overflow-x:auto}
+.att-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.att-table th{
+  padding:0.6rem 0.9rem;text-align:left;font-size:0.68rem;text-transform:uppercase;
+  letter-spacing:0.07em;color:var(--muted);font-weight:700;
+  border-bottom:1px solid var(--faint);white-space:nowrap;
+}
+.att-table td{padding:0.65rem 0.9rem;border-bottom:1px solid rgba(58,63,82,0.5);vertical-align:middle}
+.att-table tr:last-child td{border-bottom:none}
+.att-table tr:hover td{background:var(--surface2)}
+.att-cell{text-align:center}
+.att-btn{
+  width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;
+  font-size:0.85rem;display:inline-flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.att-btn.present{background:var(--green-pale);color:var(--green)}
+.att-btn.absent{background:var(--red-pale);color:var(--red)}
+.att-btn.empty{background:var(--surface3);color:var(--muted)}
+.att-btn.empty:hover{background:var(--surface2)}
+.att-rate{font-size:0.72rem;color:var(--muted)}
+.session-add-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap}
+
+/* ── CALENDAR ── */
+.cal-controls{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.cal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:700px){.cal-grid{grid-template-columns:repeat(2,1fr)}}
+.cal-cell{
+  background:var(--surface);border:1px solid var(--faint);border-radius:var(--radius-lg);
+  padding:1rem;min-height:120px;cursor:pointer;transition:border-color 0.15s;
+  display:flex;flex-direction:column;
+}
+.cal-cell:hover{border-color:var(--teal-dim)}
+.cal-cell.has-data{border-color:var(--teal-dim);background:var(--teal-pale)}
+.cal-cell.current-week{border-color:var(--gold);border-width:2px}
+.cal-cell .week-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:700;margin-bottom:4px}
+.cal-cell .week-dates{font-size:0.7rem;color:var(--muted);margin-bottom:8px}
+.cal-cell .assignment-text{font-size:0.82rem;font-weight:700;color:var(--teal);flex:1}
+.cal-cell .assignment-ar{font-family:'Amiri',serif;font-size:0.95rem;direction:rtl;color:var(--muted);margin-top:4px}
+.cal-cell .empty-hint{font-size:0.75rem;color:var(--faint);flex:1;display:flex;align-items:center}
+.year-nav{display:flex;align-items:center;gap:0.75rem}
+.year-nav span{font-size:1rem;font-weight:700;min-width:60px;text-align:center}
+.assign-modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;z-index:500;
+}
+.assign-modal-overlay.open{display:flex}
+.assign-modal{background:var(--surface);border:1px solid var(--faint);border-radius:var(--radius-lg);padding:1.75rem;width:100%;max-width:440px}
+.assign-modal h3{font-family:'Amiri',serif;font-size:1.2rem;margin-bottom:1.25rem}
+.form-group{margin-bottom:1rem}
+.form-group label{font-size:0.75rem;font-weight:600;color:var(--muted);display:block;margin-bottom:4px}
+.form-group select,.form-group input{
+  width:100%;padding:0.55rem 0.85rem;background:var(--surface2);
+  border:1px solid var(--faint);border-radius:var(--radius);
+  color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.88rem;
+}
+.form-group select option{background:var(--surface2)}
+.modal-btns{display:flex;gap:0.6rem;margin-top:1.25rem;justify-content:flex-end}
+
+/* ── MANAGE STUDENTS (sheikh only) ── */
+.student-list-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.65rem 0.9rem;background:var(--surface2);border-radius:var(--radius);
+  margin-bottom:0.5rem;
+}
+.student-list-item .sname{font-weight:600;font-size:0.88rem}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;
+  background:var(--surface);border:1px solid var(--faint);border-left:3px solid var(--teal);
+  color:var(--text);padding:0.7rem 1.1rem;border-radius:var(--radius);
+  font-size:0.82rem;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:999;
+}
+.toast.show{opacity:1}
+
+/* ── MISC ── */
+.divider{border:none;border-top:1px solid var(--faint);margin:1.25rem 0}
+.flex{display:flex}.gap-1{gap:0.5rem}.gap-2{gap:1rem}.items-center{align-items:center}.wrap{flex-wrap:wrap}
+.loading{text-align:center;padding:2.5rem;color:var(--muted);font-size:0.85rem}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="logo">
+      <span class="ar">حلقة التحفيظ</span>
+      <span class="en">Halaqa — Memorization Tracker</span>
+    </div>
+
+    <label>Who are you?</label>
+    <select id="loginSelect">
+      <option value="">— Select your name —</option>
+      <option value="__sheikh__">Sheikh (admin)</option>
+    </select>
+
+    <div class="pin-row" id="pinRow">
+      <label>Sheikh PIN</label>
+      <input type="password" id="pinInput" placeholder="Enter PIN" maxlength="6"/>
+    </div>
+
+    <p class="error-msg" id="loginError"></p>
+    <button class="btn btn-teal btn-full" onclick="doLogin()">Enter Halaqa</button>
+  </div>
+</div>
+
+<!-- ══════════════ APP ══════════════ -->
+<div id="app">
+  <div class="topbar">
+    <span class="brand">حلقة التحفيظ</span>
+    <div class="flex items-center gap-2">
+      <div class="user-pill">
+        <div class="dot"></div>
+        <span id="userLabel">—</span>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="logout()">Leave</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" onclick="switchView('quran')">📖 Quran</button>
+    <button class="nav-tab" onclick="switchView('attendance')">✅ Attendance</button>
+    <button class="nav-tab" onclick="switchView('calendar')">📅 Calendar</button>
+    <button class="nav-tab sheikh-only" onclick="switchView('manage')" style="display:none">⚙️ Manage</button>
+  </div>
+
+  <div class="page-content">
+
+    <!-- ── QURAN VIEW ── -->
+    <div class="view active" id="view-quran">
+      <div class="page-hdr">
+        <h2>Quran Page</h2>
+        <p id="quranSubtitle">Browse the mushaf and mark mistakes per student</p>
+      </div>
+
+      <div class="quran-toolbar">
+        <div>
+          <label style="font-size:0.72rem;color:var(--muted);display:block;margin-bottom:3px">Student</label>
+          <select id="quranStudentFilter" onchange="onStudentFilterChange()"></select>
+        </div>
+        <div>
+          <label style="font-size:0.72rem;color:var(--muted);display:block;margin-bottom:3px">Jump to page</label>
+          <input type="number" id="jumpPageInput" min="1" max="604" placeholder="1–604"/>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:0.5rem">
+          <button class="btn btn-outline btn-sm" onclick="jumpToPage()">Go</button>
+          <button class="btn btn-outline btn-sm" onclick="goToWeekAssignment()">Go to this week</button>
+        </div>
+        <div id="markModeToggle" class="sheikh-only" style="display:none;margin-left:auto">
+          <button class="btn btn-sm" id="markModeBtn" onclick="toggleMarkMode()" style="background:var(--surface3);color:var(--text);border:1px solid var(--faint)">
+            ✏️ Mark mistakes
+          </button>
+        </div>
+      </div>
+
+      <div class="mark-mode-bar" id="markModeBar">
+        ✏️ Mistake mode ON — click any line to mark it as a mistake for <strong id="markingForName">—</strong>
+        <button class="btn btn-sm" style="background:var(--red-pale);color:var(--red);border:none" onclick="toggleMarkMode()">Done</button>
+      </div>
+
+      <div class="quran-layout">
+        <div>
+          <div class="mushaf-wrap">
+            <div id="mushafContent"><div class="loading">Loading…</div></div>
+          </div>
+          <div class="page-nav-row" id="mushafNav" style="display:none">
+            <button class="btn btn-outline btn-sm" onclick="changeMushafPage(-1)">← Prev</button>
+            <span style="font-size:0.8rem;color:var(--muted)">Page <strong id="mushafPageNum">—</strong> / 604</span>
+            <button class="btn btn-outline btn-sm" onclick="changeMushafPage(1)">Next →</button>
+          </div>
+        </div>
+        <div>
+          <div class="mistake-panel">
+            <h3>Mistakes — <span id="mistakePanelName" style="color:var(--red)">—</span></h3>
+            <div id="mistakeList"><p style="font-size:0.78rem;color:var(--muted)">No mistakes recorded yet.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ATTENDANCE VIEW ── -->
+    <div class="view" id="view-attendance">
+      <div class="page-hdr">
+        <h2>Attendance</h2>
+        <p>Session record — everyone can see this</p>
+      </div>
+
+      <div class="session-add-row sheikh-only" id="addSessionRow" style="display:none">
+        <input type="date" id="newSessionDate" style="padding:0.45rem 0.75rem;background:var(--surface2);border:1px solid var(--faint);border-radius:var(--radius);color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.82rem"/>
+        <button class="btn btn-teal btn-sm" onclick="addSession()">+ Add Session</button>
+      </div>
+
+      <div class="card">
+        <div class="att-table-wrap">
+          <table class="att-table" id="attTable">
+            <thead id="attHead"></thead>
+            <tbody id="attBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CALENDAR VIEW ── -->
+    <div class="view" id="view-calendar">
+      <div class="page-hdr">
+        <h2>Memorization Calendar</h2>
+        <p>Weekly assignments — what we memorized and when</p>
+      </div>
+
+      <div class="cal-controls">
+        <div class="year-nav">
+          <button class="btn btn-outline btn-sm" onclick="changeYear(-1)">←</button>
+          <span id="calYear">2026</span>
+          <button class="btn btn-outline btn-sm" onclick="changeYear(1)">→</button>
+        </div>
+        <span style="font-size:0.78rem;color:var(--muted)">Click any week to set the assignment (sheikh only)</span>
+      </div>
+
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+
+    <!-- ── MANAGE VIEW (sheikh only) ── -->
+    <div class="view" id="view-manage">
+      <div class="page-hdr">
+        <h2>Manage Students</h2>
+        <p>Add or remove students from the halaqa</p>
+      </div>
+
+      <div class="card" style="max-width:480px">
+        <div style="display:flex;gap:0.6rem;margin-bottom:1.25rem;align-items:flex-end">
+          <div style="flex:1">
+            <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:4px">New student name</label>
+            <input type="text" id="newStudentName" placeholder="e.g. Bilal Hassan"
+              style="width:100%;padding:0.5rem 0.75rem;background:var(--surface2);border:1px solid var(--faint);border-radius:var(--radius);color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.88rem"/>
+          </div>
+          <button class="btn btn-teal btn-sm" onclick="addStudent()">Add</button>
+        </div>
+        <div id="studentListEl"></div>
+
+        <hr class="divider"/>
+
+        <div>
+          <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:6px">Change Sheikh PIN</label>
+          <div style="display:flex;gap:0.6rem">
+            <input type="password" id="newPinInput" placeholder="New PIN (4–6 digits)"
+              style="flex:1;padding:0.5rem 0.75rem;background:var(--surface2);border:1px solid var(--faint);border-radius:var(--radius);color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.88rem"/>
+            <button class="btn btn-outline btn-sm" onclick="changePin()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── ASSIGNMENT MODAL ── -->
+<div class="assign-modal-overlay" id="assignModal">
+  <div class="assign-modal">
+    <h3 id="assignModalTitle">Set Assignment</h3>
+    <div class="form-group">
+      <label>Surah</label>
+      <select id="assignSurah"></select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+      <div class="form-group">
+        <label>From ayah</label>
+        <input type="number" id="assignFrom" min="1" value="1"/>
+      </div>
+      <div class="form-group">
+        <label>To ayah</label>
+        <input type="number" id="assignTo" min="1" value="7"/>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-outline btn-sm" onclick="closeAssignModal()">Cancel</button>
+      <button class="btn btn-red btn-sm" id="clearAssignBtn" onclick="clearWeekAssignment()" style="display:none">Clear</button>
+      <button class="btn btn-teal btn-sm" onclick="saveWeekAssignment()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA — localStorage
+// ═══════════════════════════════════════════
+const SHEIKH_PIN_KEY = 'halaqa_pin';
+const STUDENTS_KEY   = 'halaqa_students';
+const MISTAKES_KEY   = 'halaqa_mistakes';
+const ATTENDANCE_KEY = 'halaqa_attendance';
+const SESSIONS_KEY   = 'halaqa_sessions';
+const CALENDAR_KEY   = 'halaqa_calendar';
+
+const DEFAULT_PIN = '1234';
+
+function getData(key, def) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? def; }
+  catch { return def; }
+}
+function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+function getStudents() { return getData(STUDENTS_KEY, ['Bilal Hassan','Yusuf Ali','Aisha Rahman','Omar Farouq','Fatimah Noor']); }
+function getPin() { return getData(SHEIKH_PIN_KEY, DEFAULT_PIN); }
+function getMistakes() { return getData(MISTAKES_KEY, {}); }
+function getAttendance() { return getData(ATTENDANCE_KEY, {}); }
+function getSessions() { return getData(SESSIONS_KEY, []); }
+function getCalendar() { return getData(CALENDAR_KEY, {}); }
+
+// ═══════════════════════════════════════════
+// SURAHS
+// ═══════════════════════════════════════════
+const SURAHS = [
+  {n:1,name:"Al-Fatihah",ar:"الفاتحة",ayahs:7,page:1},
+  {n:2,name:"Al-Baqarah",ar:"البقرة",ayahs:286,page:2},
+  {n:3,name:"Aal-Imran",ar:"آل عمران",ayahs:200,page:50},
+  {n:4,name:"An-Nisa",ar:"النساء",ayahs:176,page:77},
+  {n:5,name:"Al-Maidah",ar:"المائدة",ayahs:120,page:106},
+  {n:6,name:"Al-Anam",ar:"الأنعام",ayahs:165,page:128},
+  {n:7,name:"Al-Araf",ar:"الأعراف",ayahs:206,page:151},
+  {n:8,name:"Al-Anfal",ar:"الأنفال",ayahs:75,page:177},
+  {n:9,name:"At-Tawbah",ar:"التوبة",ayahs:129,page:187},
+  {n:10,name:"Yunus",ar:"يونس",ayahs:109,page:208},
+  {n:36,name:"Ya-Sin",ar:"يس",ayahs:83,page:440},
+  {n:55,name:"Ar-Rahman",ar:"الرحمن",ayahs:78,page:531},
+  {n:56,name:"Al-Waqi'ah",ar:"الواقعة",ayahs:96,page:534},
+  {n:67,name:"Al-Mulk",ar:"الملك",ayahs:30,page:562},
+  {n:78,name:"An-Naba",ar:"النبأ",ayahs:40,page:582},
+  {n:87,name:"Al-Ala",ar:"الأعلى",ayahs:19,page:591},
+  {n:93,name:"Ad-Duha",ar:"الضحى",ayahs:11,page:596},
+  {n:94,name:"Ash-Sharh",ar:"الشرح",ayahs:8,page:596},
+  {n:99,name:"Az-Zalzalah",ar:"الزلزلة",ayahs:8,page:599},
+  {n:100,name:"Al-Adiyat",ar:"العاديات",ayahs:11,page:599},
+  {n:101,name:"Al-Qari'ah",ar:"القارعة",ayahs:11,page:600},
+  {n:102,name:"At-Takathur",ar:"التكاثر",ayahs:8,page:600},
+  {n:103,name:"Al-Asr",ar:"العصر",ayahs:3,page:601},
+  {n:104,name:"Al-Humazah",ar:"الهمزة",ayahs:9,page:601},
+  {n:105,name:"Al-Fil",ar:"الفيل",ayahs:5,page:601},
+  {n:106,name:"Quraysh",ar:"قريش",ayahs:4,page:602},
+  {n:107,name:"Al-Ma'un",ar:"الماعون",ayahs:7,page:602},
+  {n:108,name:"Al-Kawthar",ar:"الكوثر",ayahs:3,page:602},
+  {n:109,name:"Al-Kafirun",ar:"الكافرون",ayahs:6,page:603},
+  {n:110,name:"An-Nasr",ar:"النصر",ayahs:3,page:603},
+  {n:111,name:"Al-Masad",ar:"المسد",ayahs:5,page:603},
+  {n:112,name:"Al-Ikhlas",ar:"الإخلاص",ayahs:4,page:604},
+  {n:113,name:"Al-Falaq",ar:"الفلق",ayahs:5,page:604},
+  {n:114,name:"An-Nas",ar:"الناس",ayahs:6,page:604},
+];
+
+// ═══════════════════════════════════════════
+// SESSION STATE
+// ═══════════════════════════════════════════
+let currentUser = null;  // 'sheikh' or student name
+let isSheikhMode = false;
+let mushafCurrentPage = 1;
+let markModeActive = false;
+let currentQuranStudent = null;
+let calYear = new Date().getFullYear();
+let openWeekKey = null;
+
+// ═══════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════
+function buildLoginDropdown() {
+  const sel = document.getElementById('loginSelect');
+  sel.innerHTML = '<option value="">— Select your name —</option>';
+  sel.innerHTML += '<option value="__sheikh__">Sheikh (admin)</option>';
+  getStudents().forEach(s => {
+    sel.innerHTML += `<option value="${s}">${s}</option>`;
+  });
+}
+
+document.getElementById('loginSelect').addEventListener('change', function() {
+  const pinRow = document.getElementById('pinRow');
+  pinRow.style.display = this.value === '__sheikh__' ? 'block' : 'none';
+  document.getElementById('loginError').textContent = '';
+});
+
+function doLogin() {
+  const val = document.getElementById('loginSelect').value;
+  if (!val) { document.getElementById('loginError').textContent = 'Please select your name.'; return; }
+  if (val === '__sheikh__') {
+    const pin = document.getElementById('pinInput').value;
+    if (pin !== getPin()) { document.getElementById('loginError').textContent = 'Incorrect PIN.'; return; }
+    currentUser = 'sheikh';
+    isSheikhMode = true;
+  } else {
+    currentUser = val;
+    isSheikhMode = false;
+  }
+  enterApp();
+}
+
+function enterApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('userLabel').textContent = isSheikhMode ? 'Sheikh (admin)' : currentUser;
+
+  // Show/hide sheikh-only elements
+  document.querySelectorAll('.sheikh-only').forEach(el => {
+    el.style.display = isSheikhMode ? (el.tagName === 'BUTTON' ? 'inline-flex' : 'flex') : 'none';
+  });
+  document.getElementById('markModeToggle').style.display = isSheikhMode ? 'block' : 'none';
+  document.getElementById('addSessionRow').style.display = isSheikhMode ? 'flex' : 'none';
+
+  buildQuranStudentFilter();
+  loadAttendance();
+  buildCalendar();
+  buildManageStudents();
+
+  // Auto-select student in quran view
+  const qSel = document.getElementById('quranStudentFilter');
+  if (!isSheikhMode) {
+    qSel.value = currentUser;
+    onStudentFilterChange();
+  } else {
+    if (qSel.options.length > 1) {
+      qSel.selectedIndex = 1;
+      onStudentFilterChange();
+    }
+  }
+  loadMushafPage(mushafCurrentPage);
+}
+
+function logout() {
+  currentUser = null;
+  isSheikhMode = false;
+  markModeActive = false;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginSelect').value = '';
+  document.getElementById('pinRow').style.display = 'none';
+  document.getElementById('pinInput').value = '';
+  document.getElementById('loginError').textContent = '';
+  buildLoginDropdown();
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function switchView(v) {
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  event.target.classList.add('active');
+  if (v === 'attendance') loadAttendance();
+  if (v === 'calendar') buildCalendar();
+  if (v === 'manage') buildManageStudents();
+}
+
+// ═══════════════════════════════════════════
+// QURAN PAGE
+// ═══════════════════════════════════════════
+function buildQuranStudentFilter() {
+  const sel = document.getElementById('quranStudentFilter');
+  sel.innerHTML = '';
+  const students = getStudents();
+  students.forEach(s => {
+    sel.innerHTML += `<option value="${s}">${s}</option>`;
+  });
+  if (!isSheikhMode) {
+    sel.value = currentUser;
+    sel.disabled = true;
+  }
+}
+
+function onStudentFilterChange() {
+  currentQuranStudent = document.getElementById('quranStudentFilter').value;
+  document.getElementById('mistakePanelName').textContent = currentQuranStudent || '—';
+  if (markModeActive) document.getElementById('markingForName').textContent = currentQuranStudent;
+  refreshMushafHighlights();
+  renderMistakePanel();
+}
+
+async function loadMushafPage(pageNum) {
+  mushafCurrentPage = pageNum;
+  document.getElementById('mushafContent').innerHTML = '<div class="loading">Loading page ' + pageNum + '…</div>';
+  document.getElementById('mushafNav').style.display = 'none';
+  try {
+    const padded = String(pageNum).padStart(3, '0');
+    const data = await fetch(
+      `https://raw.githubusercontent.com/zonetecde/mushaf-layout/refs/heads/main/mushaf/page-${padded}.json`
+    ).then(r => r.json());
+    renderMushafPage(data, pageNum);
+  } catch(e) {
+    document.getElementById('mushafContent').innerHTML = '<div class="loading">Could not load — check your internet connection.</div>';
+  }
+}
+
+function getWeekAssignmentForPage(pageNum) {
+  const cal = getCalendar();
+  for (const key in cal) {
+    const a = cal[key];
+    if (a && a.surahNum) {
+      const s = SURAHS.find(x => x.n === a.surahNum);
+      if (s && s.page === pageNum) return a;
+    }
+  }
+  return null;
+}
+
+function lineIsAssignment(verseRange) {
+  const cal = getCalendar();
+  if (!verseRange) return false;
+  const parse = v => { const [s, ay] = v.split(':').map(Number); return {s, ay}; };
+  for (const key in cal) {
+    const a = cal[key];
+    if (!a || !a.surahNum) continue;
+    const from = a.fromAyah, to = a.toAyah;
+    const parts = verseRange.split('-').map(parse);
+    if (parts.some(r => r.s === a.surahNum && r.ay >= from && r.ay <= to)) return true;
+  }
+  return false;
+}
+
+function getMistakeLinesForStudent(student, pageNum) {
+  const mistakes = getMistakes();
+  const key = `${student}__p${pageNum}`;
+  return mistakes[key] || [];
+}
+
+function getMistakeWordsForStudent(student) {
+  const mistakes = getMistakes();
+  return mistakes[student] || [];
+}
+
+function renderMushafPage(data, pageNum) {
+  const mistakeWords = getMistakeWordsForStudent(currentQuranStudent);
+  let html = '<div class="mushaf-page">';
+  data.lines.forEach(line => {
+    if (line.type === 'surah-header') {
+      html += `<div class="surah-hdr">${line.text}</div>`;
+    } else if (line.type === 'basmala') {
+      html += `<div class="basmala">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>`;
+    } else if (line.type === 'text') {
+      const isAssign = lineIsAssignment(line.verseRange);
+      // Render word by word so each is tappable
+      if (line.words && line.words.length) {
+        html += `<div class="qline${isAssign ? ' assignment' : ''}">`;
+        line.words.forEach(w => {
+          const loc = w.location;
+          const isMistake = mistakeWords.includes(loc);
+          const cls = isMistake ? ' wrd-mistake' : '';
+          const tap = isSheikhMode ? `onclick="onWordTap(this)"` : '';
+          html += `<span class="qword${cls}" data-loc="${loc}" ${tap}>${w.word} </span>`;
+        });
+        html += `</div>`;
+      } else {
+        html += `<div class="qline${isAssign ? ' assignment' : ''}">${line.text}</div>`;
+      }
+    }
+  });
+  html += '</div>';
+  document.getElementById('mushafContent').innerHTML = html;
+  document.getElementById('mushafNav').style.display = 'flex';
+  document.getElementById('mushafPageNum').textContent = pageNum;
+}
+
+function refreshMushafHighlights() {
+  const mistakeWords = getMistakeWordsForStudent(currentQuranStudent);
+  document.querySelectorAll('.qword').forEach(el => {
+    el.classList.toggle('wrd-mistake', mistakeWords.includes(el.dataset.loc));
+  });
+  renderMistakePanel();
+}
+
+function onWordTap(el) {
+  if (!isSheikhMode || !markModeActive) return;
+  const loc = el.dataset.loc;
+  if (!loc || !currentQuranStudent) return;
+  const mistakes = getMistakes();
+  const words = mistakes[currentQuranStudent] || [];
+  const idx = words.indexOf(loc);
+  if (idx === -1) {
+    words.push(loc);
+  } else {
+    words.splice(idx, 1);
+  }
+  mistakes[currentQuranStudent] = words;
+  setData(MISTAKES_KEY, mistakes);
+  el.classList.toggle('wrd-mistake', idx === -1);
+  renderMistakePanel();
+}
+
+function toggleMarkMode() {
+  markModeActive = !markModeActive;
+  const bar = document.getElementById('markModeBar');
+  const btn = document.getElementById('markModeBtn');
+  bar.classList.toggle('active', markModeActive);
+  btn.style.background = markModeActive ? 'var(--gold)' : 'var(--surface3)';
+  btn.style.color = markModeActive ? '#0f1117' : 'var(--text)';
+  btn.textContent = markModeActive ? '✏️ Marking ON' : '✏️ Mark mistakes';
+  if (markModeActive) document.getElementById('markingForName').textContent = currentQuranStudent || '—';
+  // Show cursor hint on page
+  document.getElementById('mushafContent').style.cursor = markModeActive ? 'crosshair' : '';
+  document.getElementById('mushafContent').classList.toggle('mark-mode-active', markModeActive);
+}
+
+function renderMistakePanel() {
+  const mistakes = getMistakes();
+  const words = mistakes[currentQuranStudent] || [];
+
+  // Filter to just words on current page
+  const onPage = words.filter(loc => {
+    const el = document.querySelector(`.qword[data-loc="${loc}"]`);
+    return !!el;
+  });
+
+  const el = document.getElementById('mistakeList');
+  if (words.length === 0) {
+    el.innerHTML = `<p style="font-size:0.78rem;color:var(--muted)">No mistakes recorded yet.</p>`;
+    return;
+  }
+
+  // Group by ayah
+  const byAyah = {};
+  words.forEach(loc => {
+    const parts = loc.split(':');
+    const ayahKey = `${parts[0]}:${parts[1]}`;
+    if (!byAyah[ayahKey]) byAyah[ayahKey] = [];
+    byAyah[ayahKey].push(loc);
+  });
+
+  const onPageLocs = new Set(onPage);
+
+  el.innerHTML = `
+    <p style="font-size:0.7rem;color:var(--muted);margin-bottom:8px">${words.length} word${words.length!==1?'s':''} marked total</p>
+    ${Object.entries(byAyah).map(([ayah, locs]) => `
+      <div class="mistake-item" style="${locs.some(l=>onPageLocs.has(l))?'':'opacity:0.5'}">
+        <div class="mi-line">Ayah ${ayah.split(':')[1]} ${locs.some(l=>onPageLocs.has(l))?'<span style="color:var(--red);font-size:0.62rem">● this page</span>':''}</div>
+        <div style="font-size:0.78rem;color:var(--text);margin-bottom:4px">${locs.length} word${locs.length!==1?'s':''} marked</div>
+        ${isSheikhMode ? `<button class="mi-del" onclick="clearAyahMistakes('${ayah}')">✕ Clear ayah</button>` : ''}
+      </div>
+    `).join('')}
+    ${isSheikhMode && words.length > 0 ? `<button class="mi-del" style="margin-top:6px;color:var(--red)" onclick="clearAllMistakes()">✕ Clear all for ${currentQuranStudent}</button>` : ''}
+  `;
+}
+
+function clearAyahMistakes(ayahKey) {
+  const mistakes = getMistakes();
+  mistakes[currentQuranStudent] = (mistakes[currentQuranStudent] || [])
+    .filter(loc => !loc.startsWith(ayahKey + ':'));
+  setData(MISTAKES_KEY, mistakes);
+  refreshMushafHighlights();
+}
+
+function clearAllMistakes() {
+  if (!confirm(`Clear all mistakes for ${currentQuranStudent}?`)) return;
+  const mistakes = getMistakes();
+  delete mistakes[currentQuranStudent];
+  setData(MISTAKES_KEY, mistakes);
+  refreshMushafHighlights();
+  showToast('All mistakes cleared');
+}
+
+function changeMushafPage(dir) {
+  loadMushafPage(Math.max(1, Math.min(604, mushafCurrentPage + dir)));
+}
+function jumpToPage() {
+  const v = parseInt(document.getElementById('jumpPageInput').value);
+  if (v >= 1 && v <= 604) loadMushafPage(v);
+}
+function goToWeekAssignment() {
+  const cal = getCalendar();
+  const todayWeek = getWeekKey(new Date());
+  const a = cal[todayWeek];
+  if (a && a.surahNum) {
+    const s = SURAHS.find(x => x.n === a.surahNum);
+    if (s) { loadMushafPage(s.page); return; }
+  }
+  showToast('No assignment set for this week');
+}
+
+// ═══════════════════════════════════════════
+// ATTENDANCE
+// ═══════════════════════════════════════════
+function addSession() {
+  const dateVal = document.getElementById('newSessionDate').value;
+  if (!dateVal) { showToast('Pick a date first'); return; }
+  const sessions = getSessions();
+  if (sessions.includes(dateVal)) { showToast('Session already exists'); return; }
+  sessions.push(dateVal);
+  sessions.sort();
+  setData(SESSIONS_KEY, sessions);
+  loadAttendance();
+}
+
+function toggleAttendance(student, session) {
+  if (!isSheikhMode) return;
+  const att = getAttendance();
+  const key = `${student}__${session}`;
+  att[key] = att[key] === 'present' ? 'absent' : att[key] === 'absent' ? undefined : 'present';
+  if (att[key] === undefined) delete att[key];
+  setData(ATTENDANCE_KEY, att);
+  loadAttendance();
+}
+
+function loadAttendance() {
+  const students = getStudents();
+  const sessions = getSessions();
+  const att = getAttendance();
+
+  const thead = document.getElementById('attHead');
+  const tbody = document.getElementById('attBody');
+
+  if (sessions.length === 0) {
+    thead.innerHTML = '<tr><th>Student</th><th>No sessions yet</th></tr>';
+    tbody.innerHTML = '';
+    return;
+  }
+
+  const fmtDate = d => {
+    const dt = new Date(d + 'T00:00:00');
+    return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  thead.innerHTML = `<tr>
+    <th>Student</th>
+    ${sessions.map(s => `<th style="text-align:center">${fmtDate(s)}</th>`).join('')}
+    <th>Rate</th>
+    ${isSheikhMode ? '<th></th>' : ''}
+  </tr>`;
+
+  tbody.innerHTML = students.map(student => {
+    const presentCount = sessions.filter(s => att[`${student}__${s}`] === 'present').length;
+    const markedCount  = sessions.filter(s => att[`${student}__${s}`] !== undefined).length;
+    const rate = markedCount > 0 ? Math.round(presentCount / markedCount * 100) : null;
+    return `<tr>
+      <td><strong>${student}</strong></td>
+      ${sessions.map(s => {
+        const status = att[`${student}__${s}`];
+        const icon = status === 'present' ? '✓' : status === 'absent' ? '✗' : '·';
+        const cls  = status === 'present' ? 'present' : status === 'absent' ? 'absent' : 'empty';
+        const clickable = isSheikhMode ? `onclick="toggleAttendance('${student}','${s}')"` : '';
+        return `<td class="att-cell"><button class="att-btn ${cls}" ${clickable}>${icon}</button></td>`;
+      }).join('')}
+      <td class="att-rate">${rate !== null ? `<span class="badge ${rate>=80?'badge-green':rate>=50?'badge-gold':'badge-red'}">${rate}%</span>` : '—'}</td>
+      ${isSheikhMode ? `<td><button class="btn btn-sm" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.7rem" onclick="removeStudentConfirm('${student}')">remove</button></td>` : ''}
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// CALENDAR
+// ═══════════════════════════════════════════
+function getWeekKey(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const sunday = new Date(d);
+  sunday.setDate(d.getDate() - day);
+  return sunday.toISOString().split('T')[0];
+}
+
+function getWeeksForYear(year) {
+  const weeks = [];
+  let d = new Date(year, 0, 1);
+  // Go to first Sunday
+  while (d.getDay() !== 0) d.setDate(d.getDate() + 1);
+  while (d.getFullYear() <= year) {
+    const sun = new Date(d);
+    const sat = new Date(d); sat.setDate(sat.getDate() + 6);
+    if (sun.getFullYear() > year) break;
+    weeks.push({ key: sun.toISOString().split('T')[0], sun, sat });
+    d.setDate(d.getDate() + 7);
+  }
+  return weeks;
+}
+
+function buildCalendar() {
+  const weeks = getWeeksForYear(calYear);
+  const cal = getCalendar();
+  const todayKey = getWeekKey(new Date());
+  const fmt = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const weekNum = (d) => {
+    const start = new Date(d.getFullYear(), 0, 1);
+    return Math.ceil(((d - start) / 86400000 + start.getDay() + 1) / 7);
+  };
+
+  document.getElementById('calYear').textContent = calYear;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = weeks.map(w => {
+    const a = cal[w.key];
+    const isCurrent = w.key === todayKey;
+    const surah = a ? SURAHS.find(s => s.n === a.surahNum) : null;
+    return `<div class="cal-cell ${a ? 'has-data' : ''} ${isCurrent ? 'current-week' : ''}"
+      onclick="${isSheikhMode ? `openAssignModal('${w.key}')` : ''}">
+      <div class="week-label">Week ${weekNum(w.sun)}${isCurrent ? ' · NOW' : ''}</div>
+      <div class="week-dates">${fmt(w.sun)} – ${fmt(w.sat)}</div>
+      ${a && surah ? `
+        <div class="assignment-text">${surah.name} ${a.fromAyah}–${a.toAyah}</div>
+        <div class="assignment-ar">${surah.ar} ${a.fromAyah}–${a.toAyah}</div>
+      ` : `<div class="empty-hint">${isSheikhMode ? '+ Set assignment' : 'No assignment'}</div>`}
+    </div>`;
+  }).join('');
+}
+
+function changeYear(dir) {
+  calYear += dir;
+  buildCalendar();
+}
+
+// ── Assign Modal ──
+function populateAssignSurahSelect() {
+  const sel = document.getElementById('assignSurah');
+  if (sel.options.length) return;
+  SURAHS.forEach(s => sel.innerHTML += `<option value="${s.n}">${s.n}. ${s.name} — ${s.ar}</option>`);
+}
+
+function openAssignModal(weekKey) {
+  if (!isSheikhMode) return;
+  openWeekKey = weekKey;
+  populateAssignSurahSelect();
+  const cal = getCalendar();
+  const a = cal[weekKey];
+  const d = new Date(weekKey + 'T00:00:00');
+  const fmt = dt => dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const end = new Date(d); end.setDate(end.getDate() + 6);
+  document.getElementById('assignModalTitle').textContent = `Week of ${fmt(d)} – ${fmt(end)}`;
+  if (a) {
+    document.getElementById('assignSurah').value = a.surahNum;
+    document.getElementById('assignFrom').value = a.fromAyah;
+    document.getElementById('assignTo').value = a.toAyah;
+    document.getElementById('clearAssignBtn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('assignSurah').value = SURAHS[0].n;
+    document.getElementById('assignFrom').value = 1;
+    document.getElementById('assignTo').value = 7;
+    document.getElementById('clearAssignBtn').style.display = 'none';
+  }
+  document.getElementById('assignModal').classList.add('open');
+}
+
+function closeAssignModal() {
+  document.getElementById('assignModal').classList.remove('open');
+  openWeekKey = null;
+}
+
+function saveWeekAssignment() {
+  const surahNum = parseInt(document.getElementById('assignSurah').value);
+  const from = parseInt(document.getElementById('assignFrom').value);
+  const to   = parseInt(document.getElementById('assignTo').value);
+  const surah = SURAHS.find(s => s.n === surahNum);
+  if (!surah || from < 1 || to < from || to > surah.ayahs) {
+    showToast('Check ayah range'); return;
+  }
+  const cal = getCalendar();
+  cal[openWeekKey] = { surahNum, fromAyah: from, toAyah: to };
+  setData(CALENDAR_KEY, cal);
+  closeAssignModal();
+  buildCalendar();
+  showToast('Assignment saved!');
+}
+
+function clearWeekAssignment() {
+  const cal = getCalendar();
+  delete cal[openWeekKey];
+  setData(CALENDAR_KEY, cal);
+  closeAssignModal();
+  buildCalendar();
+  showToast('Assignment cleared');
+}
+
+// Close modal on overlay click
+document.getElementById('assignModal').addEventListener('click', function(e) {
+  if (e.target === this) closeAssignModal();
+});
+
+// ═══════════════════════════════════════════
+// MANAGE STUDENTS
+// ═══════════════════════════════════════════
+function buildManageStudents() {
+  const students = getStudents();
+  document.getElementById('studentListEl').innerHTML = students.map(s => `
+    <div class="student-list-item">
+      <span class="sname">${s}</span>
+      <button class="btn btn-sm" style="background:var(--red-pale);color:var(--red);border:none" onclick="removeStudentConfirm('${s}')">Remove</button>
+    </div>
+  `).join('') || '<p style="color:var(--muted);font-size:0.82rem">No students yet.</p>';
+}
+
+function addStudent() {
+  const name = document.getElementById('newStudentName').value.trim();
+  if (!name) return;
+  const students = getStudents();
+  if (students.includes(name)) { showToast('Already in the list'); return; }
+  students.push(name);
+  setData(STUDENTS_KEY, students);
+  document.getElementById('newStudentName').value = '';
+  buildManageStudents();
+  buildQuranStudentFilter();
+  loadAttendance();
+  buildLoginDropdown();
+  showToast(`${name} added`);
+}
+
+function removeStudentConfirm(name) {
+  if (!confirm(`Remove ${name} from the halaqa?`)) return;
+  const students = getStudents().filter(s => s !== name);
+  setData(STUDENTS_KEY, students);
+  buildManageStudents();
+  buildQuranStudentFilter();
+  loadAttendance();
+  buildLoginDropdown();
+  showToast(`${name} removed`);
+}
+
+function changePin() {
+  const pin = document.getElementById('newPinInput').value.trim();
+  if (pin.length < 4) { showToast('PIN must be 4+ digits'); return; }
+  setData(SHEIKH_PIN_KEY, pin);
+  document.getElementById('newPinInput').value = '';
+  showToast('PIN updated');
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+buildLoginDropdown();
+populateAssignSurahSelect();
+</script>
+</body>
+</html>

@@ -301,6 +301,53 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .divider{border:none;border-top:1px solid var(--faint);margin:1.1rem 0}
 .loading{text-align:center;padding:3rem;color:var(--muted);font-size:0.85rem}
 .flex{display:flex}.gap-1{gap:0.5rem}.items-center{align-items:center}
+
+/* ══ MOBILE ══ */
+@media(max-width:600px){
+  .page-content{padding:1rem}
+  .topbar{padding:0 1rem}
+  .topbar .brand{font-size:1rem}
+  .user-pill{font-size:0.68rem;padding:2px 8px}
+  .nav-tabs{padding:0 0.5rem;overflow-x:auto}
+  .nav-tab{padding:9px 12px;font-size:0.72rem;white-space:nowrap}
+
+  /* Mushaf */
+  .mushaf-book{padding:1.25rem 1.25rem 1rem}
+  .mushaf-book::before{inset:6px}
+  .basmala{font-size:1.4rem}
+  .qline{font-size:1.1rem;line-height:2.2;word-spacing:0.05em}
+  .qword{padding:1px 1px;font-size:1.1rem}
+  .mushaf-footer-num{font-size:0.8rem}
+  .surah-hdr{font-size:0.82rem}
+  .mushaf-top-bar .mhdr-surah,.mushaf-top-bar .mhdr-juz{font-size:0.72rem}
+
+  /* Quran toolbar — stack vertically */
+  .quran-toolbar{flex-direction:column;align-items:stretch;gap:0.5rem}
+  .quran-toolbar .tf-group{flex-direction:row;align-items:center;gap:0.5rem}
+  .quran-toolbar .tf-label{white-space:nowrap;min-width:80px}
+  .quran-toolbar select,.quran-toolbar input[type=number]{flex:1}
+  #markModeToggle{margin-left:0!important}
+
+  /* Hide mistake panel on mobile, show below mushaf */
+  .quran-layout{grid-template-columns:1fr}
+  .mistake-panel{margin-top:1rem}
+
+  /* Attendance table — smaller */
+  .att-table{font-size:0.72rem}
+  .att-table th,.att-table td{padding:0.4rem 0.5rem}
+  .att-btn{width:24px;height:24px;font-size:0.72rem}
+
+  /* Calendar — 2 cols on mobile */
+  .cal-grid{grid-template-columns:repeat(2,1fr);gap:0.6rem}
+  .cal-cell{padding:0.65rem;min-height:90px}
+  .wk-assign{font-size:0.72rem}
+  .wk-ar{font-size:0.78rem}
+  .wk-label,.wk-dates{font-size:0.6rem}
+
+  /* Login */
+  .login-bismillah{font-size:1.8rem}
+  .login-card{padding:1.5rem}
+}
 </style>
 </head>
 <body>
@@ -671,17 +718,27 @@ function refreshHighlights(){
 }
 
 function onWordTap(el){
-  if(!isSheikhMode||!markMode) return;
-  const loc=el.dataset.loc; if(!loc||!currentStudent) return;
+  const student=currentStudent||document.getElementById('quranStudentFilter').value;
+  if(!isSheikhMode){ showToast('Must be sheikh'); return; }
+  if(!markMode){ showToast('Enable mark mode first'); return; }
+  if(!student){ showToast('Select a student first'); return; }
+  const loc=el.dataset.loc;
+  if(!loc){ showToast('No location on word'); return; }
   const mistakes=getMistakes();
-  const words=mistakes[currentStudent]||[];
+  const words=mistakes[student]||[];
   const idx=words.indexOf(loc);
-  if(idx===-1) words.push(loc); else words.splice(idx,1);
-  mistakes[currentStudent]=words;
+  if(idx===-1){ words.push(loc); el.classList.add('wrd-mistake'); showToast('Marked'); }
+  else{ words.splice(idx,1); el.classList.remove('wrd-mistake'); showToast('Cleared'); }
+  mistakes[student]=words;
   save(K.MISTAKES,mistakes);
-  el.classList.toggle('wrd-mistake',idx===-1);
   renderMistakePanel();
 }
+
+// Primary handler via event delegation on mushaf content
+document.addEventListener('click',function(e){
+  const el=e.target.closest('.qword');
+  if(el) onWordTap(el);
+});
 
 function toggleMarkMode(){
   markMode=!markMode;

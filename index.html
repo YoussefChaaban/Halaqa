@@ -652,19 +652,23 @@ function getWeekKey(date){
   const d=new Date(date),sun=new Date(d);
   sun.setDate(d.getDate()-d.getDay());return sun.toISOString().split('T')[0];
 }
-function addDays(dateStr,n){const d=new Date(dateStr+'T00:00:00');d.setDate(d.getDate()+n);return d}
+function addDays(dateOrStr,n){const d=typeof dateOrStr==='string'?new Date(dateOrStr+'T00:00:00'):new Date(dateOrStr);d.setDate(d.getDate()+n);return d}
 
 function buildCalendar(){
   const cal=getCal(),today=getWeekKey(new Date());
   const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   const fmtLong=d=>d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
 
-  // Current week banner
-  const cwStart=new Date(today+'T00:00:00');
-  const cwEnd=addDays(today,6);
-  document.getElementById('cwDates').textContent=`${fmtLong(cwStart)} – ${fmt(cwEnd)}`;
-  const cwa=cal[today];
+  // On Fridays, show NEXT week's assignment at the top
+  const isFriday=new Date().getDay()===5;
+  const bannerKey=isFriday?getWeekKey(addDays(today,7)):today;
+  const bannerStart=new Date(bannerKey+'T00:00:00');
+  const bannerEnd=addDays(bannerKey,6);
+  document.getElementById('cwDates').textContent=`${fmtLong(bannerStart)} – ${fmt(bannerEnd)}`;
+  const cwa=cal[bannerKey];
   const cwSurah=cwa?SURAHS.find(s=>s.n===cwa.surahNum):null;
+  const bannerLabel=isFriday?'📅 Next Week':'📅 This Week';
+  document.getElementById('cwBanner').querySelector('.cwb-label').textContent=bannerLabel;
   if(cwa&&cwSurah){
     document.getElementById('cwAssign').textContent=`${cwSurah.name} — Ayahs ${cwa.fromAyah}–${cwa.toAyah}`;
     document.getElementById('cwAr').textContent=`${cwSurah.ar} ${cwa.fromAyah}–${cwa.toAyah}`;
@@ -672,6 +676,8 @@ function buildCalendar(){
     document.getElementById('cwAssign').innerHTML='<span class="cwb-empty">No assignment set yet</span>';
     document.getElementById('cwAr').textContent='';
   }
+  // Edit button targets the correct week
+  document.getElementById('cwEditBtn').onclick=()=>openAssignModal(bannerKey);
 
   document.getElementById('calYear').textContent=calYear;
   document.getElementById('calHint').textContent=isSheikhMode?'Click any week to set or edit assignment':'';

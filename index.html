@@ -17,8 +17,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px}
-
-/* ══ LOGIN ══ */
 #loginScreen{
   min-height:100vh;display:flex;align-items:center;justify-content:center;
   background:var(--bg);
@@ -41,13 +39,16 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .btn-red{background:var(--red);color:#fff}
 .btn-sm{padding:0.3rem 0.7rem;font-size:0.75rem}
 .btn-full{width:100%}
-
-/* ══ APP SHELL ══ */
 #app{display:none;height:100vh;flex-direction:column}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:50px;background:var(--surface);border-bottom:1px solid var(--faint);flex-shrink:0}
 .topbar .brand{font-family:'Scheherazade New',serif;font-size:1.25rem;color:var(--gold)}
+.topbar-right{display:flex;align-items:center;gap:8px}
 .user-pill{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--faint);border-radius:20px;padding:3px 12px;font-size:0.75rem;color:var(--muted)}
 .user-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.sync-badge{font-size:0.65rem;color:var(--muted);display:flex;align-items:center;gap:4px}
+.sync-badge .sdot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.sync-badge .sdot.syncing{background:var(--gold);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 .nav-tabs{display:flex;padding:0 1.5rem;background:var(--surface);border-bottom:1px solid var(--faint);flex-shrink:0;overflow-x:auto}
 .nav-tab{padding:11px 20px;font-size:0.8rem;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all 0.15s;background:none;border-left:none;border-right:none;border-top:none;font-family:'DM Sans',sans-serif;white-space:nowrap}
 .nav-tab:hover{color:var(--text)}.nav-tab.active{color:var(--teal);border-bottom-color:var(--teal)}
@@ -56,8 +57,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .page-hdr{margin-bottom:1.5rem}
 .page-hdr h2{font-family:'Amiri',serif;font-size:1.5rem;color:var(--text)}
 .page-hdr p{font-size:0.78rem;color:var(--muted);margin-top:3px}
-
-/* ══ QURAN ══ */
 .quran-toolbar{display:flex;align-items:flex-end;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
 .tf-group{display:flex;flex-direction:column;gap:3px}
 .tf-label{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em}
@@ -66,8 +65,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .quran-toolbar select option{background:var(--surface2)}
 .quran-layout{display:grid;grid-template-columns:1fr 260px;gap:1.5rem;align-items:start}
 @media(max-width:900px){.quran-layout{grid-template-columns:1fr}}
-
-/* Mushaf */
 .mushaf-book{background:#fff;border:1px solid #d4c4a0;box-shadow:0 8px 40px rgba(0,0,0,0.45);padding:2.5rem 3rem 2rem;position:relative;max-width:660px;margin:0 auto}
 .mushaf-book::before{content:'';position:absolute;inset:10px;border:1px solid #c8b48a;pointer-events:none}
 .mushaf-top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;direction:rtl}
@@ -76,7 +73,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .basmala{text-align:center;font-family:'Scheherazade New','Amiri Quran',serif;font-size:2rem;color:#1a0a00;margin:0 0 0.75rem;line-height:1.6;direction:rtl}
 .qline{font-family:'Scheherazade New','Amiri Quran',serif;font-size:1.6rem;line-height:2.6;text-align:center;direction:rtl;color:#1a0a00;display:block;padding:0;word-spacing:0.1em}
 .qline.assignment-line{background:rgba(30,140,100,0.07);border-radius:3px}
-.qword{display:inline;cursor:default;border-radius:3px;padding:2px 2px;transition:background 0.08s;-webkit-user-select:none;user-select:none}
+.qword{display:inline;cursor:default;border-radius:3px;padding:2px 2px;transition:background 0.08s;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .qword.wrd-mistake{background:rgba(190,30,30,0.18);color:#7a0000;border-radius:3px;border-bottom:2px solid rgba(190,30,30,0.55)}
 .mark-mode-active .qword{cursor:crosshair}
 .mark-mode-active .qword:hover{background:rgba(210,170,30,0.22)}
@@ -90,8 +87,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .mi-ayah{color:var(--red);font-weight:700;font-size:0.68rem;text-transform:uppercase;margin-bottom:3px}
 .mi-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.7rem;font-family:'DM Sans',sans-serif}
 .mi-del:hover{color:var(--red)}
-
-/* ══ ATTENDANCE ══ */
 .card{background:var(--surface);border:1px solid var(--faint);border-radius:var(--radius-lg);padding:1.25rem}
 .att-table-wrap{overflow-x:auto}
 .att-table{width:100%;border-collapse:collapse;font-size:0.82rem}
@@ -109,25 +104,15 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .badge-green{background:var(--green-pale);color:var(--green)}
 .badge-red{background:var(--red-pale);color:var(--red)}
 .badge-gold{background:var(--gold-glow);color:var(--gold)}
-
-/* ══ CALENDAR ══ */
 .cal-controls{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap}
 .year-nav{display:flex;align-items:center;gap:0.6rem}
 .year-nav strong{font-size:1rem;min-width:50px;text-align:center}
-
-/* Current week highlight strip */
-.current-week-banner{
-  background:var(--teal-glow);border:1px solid var(--teal-dim);
-  border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;
-}
+.current-week-banner{background:var(--teal-glow);border:1px solid var(--teal-dim);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
 .cwb-label{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal);font-weight:700}
 .cwb-assign{font-size:1rem;font-weight:600;color:var(--text)}
 .cwb-ar{font-family:'Amiri',serif;font-size:1.1rem;direction:rtl;color:var(--muted)}
 .cwb-dates{font-size:0.75rem;color:var(--muted);margin-top:2px}
 .cwb-empty{font-size:0.82rem;color:var(--muted);font-style:italic}
-
-/* Month grouping */
 .cal-month{margin-bottom:1.5rem}
 .cal-month-hdr{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:1px solid var(--faint)}
 .cal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem}
@@ -141,8 +126,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .wk-assign{font-size:0.78rem;font-weight:600;color:var(--teal);flex:1}
 .wk-ar{font-family:'Amiri',serif;font-size:0.88rem;direction:rtl;color:var(--muted);margin-top:2px}
 .wk-empty{font-size:0.68rem;color:var(--faint);flex:1;display:flex;align-items:center}
-
-/* ══ MODAL ══ */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:500}
 .modal-overlay.open{display:flex}
 .modal{background:var(--surface);border:1px solid var(--faint);border-radius:var(--radius-lg);padding:1.75rem;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.5)}
@@ -152,19 +135,13 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .fg select,.fg input{width:100%;padding:0.5rem 0.75rem;background:var(--surface2);border:1px solid var(--faint);border-radius:var(--radius);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.87rem}
 .fg select option{background:var(--surface2)}
 .modal-btns{display:flex;gap:0.5rem;margin-top:1.25rem;justify-content:flex-end}
-
-/* ══ MANAGE ══ */
 .student-item{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.85rem;background:var(--surface2);border-radius:var(--radius);margin-bottom:0.4rem}
 .student-item .sname{font-size:0.88rem;font-weight:500}
-
-/* ══ TOAST ══ */
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--surface);border:1px solid var(--faint);border-left:3px solid var(--teal);color:var(--text);padding:0.65rem 1rem;border-radius:var(--radius);font-size:0.8rem;opacity:0;pointer-events:none;transition:opacity 0.2s;z-index:999}
 .toast.show{opacity:1}
 .divider{border:none;border-top:1px solid var(--faint);margin:1.1rem 0}
 .loading{text-align:center;padding:3rem;color:#888;font-size:0.85rem}
 .flex{display:flex}.gap-1{gap:0.5rem}.items-center{align-items:center}
-
-/* ══ MOBILE ══ */
 @media(max-width:600px){
   .page-content{padding:1rem}
   .topbar{padding:0 1rem}
@@ -218,7 +195,11 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 <div id="app">
   <div class="topbar">
     <span class="brand">حلقة التحفيظ</span>
-    <div class="flex items-center gap-1">
+    <div class="topbar-right">
+      <div class="sync-badge" id="syncBadge" style="display:none">
+        <div class="sdot" id="syncDot"></div>
+        <span id="syncLabel">synced</span>
+      </div>
       <div class="user-pill"><div class="dot"></div><span id="userLabel">—</span></div>
       <button class="btn btn-ghost btn-sm" onclick="logout()">Leave</button>
     </div>
@@ -279,9 +260,9 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 
     <!-- ATTENDANCE -->
     <div class="view" id="view-attendance">
-      <div class="page-hdr"><h2>Attendance</h2><p>Session record — visible to everyone</p></div>
+      <div class="page-hdr"><h2>Attendance</h2><p>Session record — synced across all devices</p></div>
       <div class="session-row sheikh-only" id="addSessionRow" style="display:none">
-        <input type="date" id="newSessionDate" style="padding:0.42rem 0.7rem;background:var(--surface2);border:1px solid var(--faint);border-radius:var(--radius);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.82rem"/>
+        <input type="date" id="newSessionDate" style="padding:0.42rem 0.7rem;background:var(--surface2);border:1px solid var(--faint);border-radius:var(--radius);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.82rem;color-scheme:dark"/>
         <button class="btn btn-teal btn-sm" onclick="addSession()">+ Add Session</button>
       </div>
       <div class="card">
@@ -294,17 +275,15 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
     <!-- CALENDAR -->
     <div class="view" id="view-calendar">
       <div class="page-hdr"><h2>Memorization Calendar</h2><p id="calHint"></p></div>
-      <!-- Current week hero -->
       <div class="current-week-banner" id="cwBanner">
         <div>
-          <div class="cwb-label">📅 This Week</div>
+          <div class="cwb-label" id="cwLabel">📅 This Week</div>
           <div class="cwb-dates" id="cwDates">—</div>
           <div class="cwb-assign" id="cwAssign">—</div>
           <div class="cwb-ar" id="cwAr"></div>
         </div>
-        <button class="btn btn-outline btn-sm sheikh-only" id="cwEditBtn" onclick="editCurrentWeek()" style="display:none">Edit</button>
+        <button class="btn btn-outline btn-sm sheikh-only" id="cwEditBtn" style="display:none">Edit</button>
       </div>
-      <!-- Year nav + grid -->
       <div class="cal-controls">
         <div class="year-nav">
           <button class="btn btn-ghost btn-sm" onclick="changeYear(-1)">←</button>
@@ -359,20 +338,96 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 
 <div class="toast" id="toast"></div>
 
-<script>
-// ═══ STORAGE ═══
-const K={PIN:'hq_pin',STUDENTS:'hq_students',MISTAKES:'hq_mistakes',ATT:'hq_att',SESSIONS:'hq_sessions',CAL:'hq_cal'};
-const DEFAULT_PIN='1234';
-function load(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}}
-function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
-const getStudents=()=>load(K.STUDENTS,[]);
-const getPin=()=>load(K.PIN,DEFAULT_PIN);
-const getMistakes=()=>load(K.MISTAKES,{});
-const getAtt=()=>load(K.ATT,{});
-const getSessions=()=>load(K.SESSIONS,[]);
-const getCal=()=>load(K.CAL,{});
+<script type="module">
+// ═══════════════════════════════════════════
+// FIREBASE — real-time sync across devices
+// ═══════════════════════════════════════════
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, remove }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ═══ SURAHS ═══
+const firebaseConfig = {
+  apiKey: "AIzaSyA-W06tg5ErheKtXldr9FjqqxUnb3_-Vf4",
+  authDomain: "halaqa-55031.firebaseapp.com",
+  databaseURL: "https://halaqa-55031-default-rtdb.firebaseio.com",
+  projectId: "halaqa-55031",
+  storageBucket: "halaqa-55031.firebasestorage.app",
+  messagingSenderId: "253282712577",
+  appId: "1:253282712577:web:29450d4aee6c8d8eb21400"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db    = getDatabase(fbApp);
+
+// ─── sync helpers ───
+function setSyncing(){ document.getElementById('syncDot').className='sdot syncing'; document.getElementById('syncLabel').textContent='saving…'; }
+function setSynced(){  document.getElementById('syncDot').className='sdot'; document.getElementById('syncLabel').textContent='synced'; }
+
+async function fbSet(path, val){
+  setSyncing();
+  await set(ref(db, path), val);
+  setSynced();
+}
+async function fbRemove(path){
+  setSyncing();
+  await remove(ref(db, path));
+  setSynced();
+}
+
+// Live in-memory store — populated from Firebase
+const DB = { students:[], mistakes:{}, attendance:{}, sessions:[], calendar:{} };
+
+// Subscribe to all collections — update DB + re-render on any change
+onValue(ref(db,'students'), snap=>{
+  DB.students = snap.exists() ? Object.values(snap.val()) : [];
+  if(window._appReady) { buildStudentFilter(); buildStudentList(); buildLoginDropdown(); loadAttendance(); }
+});
+onValue(ref(db,'mistakes'), snap=>{
+  DB.mistakes = snap.exists() ? snap.val() : {};
+  if(window._appReady) refreshHighlights();
+});
+onValue(ref(db,'attendance'), snap=>{
+  DB.attendance = snap.exists() ? snap.val() : {};
+  if(window._appReady) loadAttendance();
+});
+onValue(ref(db,'sessions'), snap=>{
+  DB.sessions = snap.exists() ? Object.values(snap.val()).sort() : [];
+  if(window._appReady) loadAttendance();
+});
+onValue(ref(db,'calendar'), snap=>{
+  DB.calendar = snap.exists() ? snap.val() : {};
+  if(window._appReady) buildCalendar();
+});
+
+// Expose Firebase ops to global scope so non-module functions can use them
+window._fb = { set: fbSet, remove: fbRemove, DB };
+
+// Show sync badge once app is open
+window._showSyncBadge = () => { document.getElementById('syncBadge').style.display='flex'; };
+</script>
+
+<script>
+// ═══════════════════════════════════════════
+// APP — same code as before, now reads/writes
+// from window._fb.DB instead of localStorage
+// ═══════════════════════════════════════════
+
+const DEFAULT_PIN = '1234';
+// PIN stays local — only sheikh needs it
+function getPin(){ return localStorage.getItem('hq_pin') || DEFAULT_PIN; }
+function savePin(p){ localStorage.setItem('hq_pin', p); }
+
+// Data accessors — read from Firebase in-memory store
+function getStudents(){ return window._fb ? window._fb.DB.students : []; }
+function getMistakes(){ return window._fb ? window._fb.DB.mistakes : {}; }
+function getAtt(){      return window._fb ? window._fb.DB.attendance : {}; }
+function getSessions(){ return window._fb ? window._fb.DB.sessions : []; }
+function getCal(){      return window._fb ? window._fb.DB.calendar : {}; }
+
+// Write helpers
+function fbSet(path, val){ return window._fb ? window._fb.set(path, val) : Promise.resolve(); }
+function fbRemove(path){   return window._fb ? window._fb.remove(path) : Promise.resolve(); }
+
 const SURAHS=[
   {n:1,name:"Al-Fatihah",ar:"الفاتحة",ayahs:7,page:1},
   {n:2,name:"Al-Baqarah",ar:"البقرة",ayahs:286,page:2},
@@ -410,7 +465,6 @@ const SURAHS=[
   {n:114,name:"An-Nas",ar:"الناس",ayahs:6,page:604},
 ];
 
-// ═══ STATE ═══
 let currentUser=null,isSheikhMode=false,mushafPage=1,markMode=false;
 let currentStudent=null,calYear=new Date().getFullYear(),openWeekKey=null;
 
@@ -443,6 +497,8 @@ function enterApp(){
   document.querySelectorAll('.sheikh-only').forEach(el=>{
     el.style.display=isSheikhMode?(el.tagName==='BUTTON'?'inline-flex':'flex'):'none';
   });
+  window._appReady=true;
+  if(window._showSyncBadge) window._showSyncBadge();
   buildStudentFilter();
   loadAttendance();
   buildCalendar();
@@ -456,6 +512,7 @@ function enterApp(){
 
 function logout(){
   currentUser=null;isSheikhMode=false;markMode=false;mushafPage=1;
+  window._appReady=false;
   document.getElementById('app').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
   document.getElementById('loginSelect').value='';
@@ -479,8 +536,12 @@ function switchView(v,btn){
 // ═══ QURAN ═══
 function buildStudentFilter(){
   const sel=document.getElementById('quranStudentFilter');
+  const prev=sel.value;
   sel.innerHTML='';
-  getStudents().forEach(s=>sel.innerHTML+=`<option value="${s}">${s}</option>`);
+  const students=getStudents();
+  if(!students.length){sel.innerHTML='<option value="">No students yet</option>';return}
+  students.forEach(s=>sel.innerHTML+=`<option value="${s}">${s}</option>`);
+  if(prev&&students.includes(prev))sel.value=prev;
   if(!isSheikhMode){sel.value=currentUser;sel.disabled=true}
 }
 
@@ -557,7 +618,6 @@ function refreshHighlights(){
   renderMistakePanel();
 }
 
-// Single event delegation — no inline onclick on words
 document.getElementById('mushafBook').addEventListener('click',function(e){
   const el=e.target.closest('.qword');
   if(!el)return;
@@ -565,16 +625,18 @@ document.getElementById('mushafBook').addEventListener('click',function(e){
   if(!markMode){showToast('Tap "Mark mistakes" first');return}
   const student=currentStudent||document.getElementById('quranStudentFilter').value;
   if(!student){showToast('Select a student first');return}
-  const loc=el.dataset.loc;
-  if(!loc)return;
-  const mistakes=getMistakes();
-  const words=mistakes[student]||[];
+  const loc=el.dataset.loc;if(!loc)return;
+  // optimistic update
+  const mistakes={...getMistakes()};
+  const words=[...(mistakes[student]||[])];
   const idx=words.indexOf(loc);
   if(idx===-1){words.push(loc);el.classList.add('wrd-mistake')}
   else{words.splice(idx,1);el.classList.remove('wrd-mistake')}
   mistakes[student]=words;
-  save(K.MISTAKES,mistakes);
+  if(window._fb) window._fb.DB.mistakes=mistakes; // update local copy instantly
   renderMistakePanel();
+  // persist to Firebase
+  fbSet(`mistakes/${student}`, words.length ? words : null);
 });
 
 function toggleMarkMode(){
@@ -592,7 +654,7 @@ function toggleMarkMode(){
 function renderMistakePanel(){
   const all=getMistakes()[currentStudent]||[];
   const el=document.getElementById('mistakeList');
-  if(all.length===0){el.innerHTML='<p style="font-size:0.78rem;color:var(--muted)">No mistakes recorded.</p>';return}
+  if(all.length===0){el.innerHTML='<p style="font-size:0.78rem;color:var(--muted)">No mistakes recorded. ماشاء الله</p>';return}
   const byAyah={};
   all.forEach(loc=>{const[s,a]=loc.split(':');const k=`${s}:${a}`;if(!byAyah[k])byAyah[k]=[];byAyah[k].push(loc)});
   const onPage=new Set(all.filter(loc=>document.querySelector(`.qword[data-loc="${loc}"]`)));
@@ -605,8 +667,19 @@ function renderMistakePanel(){
     (isSheikhMode&&all.length>0?`<button class="mi-del" style="margin-top:8px;color:var(--red)" onclick="clearAll()">✕ clear all</button>`:'');
 }
 
-function clearAyah(k){const m=getMistakes();m[currentStudent]=(m[currentStudent]||[]).filter(l=>!l.startsWith(k+':'));save(K.MISTAKES,m);refreshHighlights()}
-function clearAll(){if(!confirm(`Clear all mistakes for ${currentStudent}?`))return;const m=getMistakes();delete m[currentStudent];save(K.MISTAKES,m);refreshHighlights();showToast('Cleared')}
+function clearAyah(k){
+  const m={...getMistakes()};
+  m[currentStudent]=(m[currentStudent]||[]).filter(l=>!l.startsWith(k+':'));
+  if(window._fb) window._fb.DB.mistakes=m;
+  fbSet(`mistakes/${currentStudent}`, m[currentStudent]?.length ? m[currentStudent] : null);
+  refreshHighlights();
+}
+function clearAll(){
+  if(!confirm(`Clear all mistakes for ${currentStudent}?`))return;
+  if(window._fb){ const m={...window._fb.DB.mistakes}; delete m[currentStudent]; window._fb.DB.mistakes=m; }
+  fbRemove(`mistakes/${currentStudent}`);
+  refreshHighlights();showToast('Cleared');
+}
 function changeMushafPage(d){loadMushafPage(Math.max(1,Math.min(604,mushafPage+d)))}
 function jumpToPage(){const v=parseInt(document.getElementById('jumpPageInput').value);if(v>=1&&v<=604)loadMushafPage(v)}
 function goToWeekAssignment(){
@@ -617,31 +690,40 @@ function goToWeekAssignment(){
 document.getElementById('jumpPageInput').addEventListener('keydown',e=>{if(e.key==='Enter')jumpToPage()});
 
 // ═══ ATTENDANCE ═══
-function addSession(){
+async function addSession(){
   const d=document.getElementById('newSessionDate').value;
   if(!d){showToast('Pick a date');return}
-  const s=getSessions();if(s.includes(d)){showToast('Already exists');return}
-  s.push(d);s.sort();save(K.SESSIONS,s);loadAttendance();
+  if(getSessions().includes(d)){showToast('Already exists');return}
+  const sessions=[...getSessions(),d].sort();
+  await fbSet('sessions', sessions.reduce((o,s,i)=>{o[i]=s;return o},{}));
+  showToast('Session added');
 }
-function toggleAtt(student,session){
+async function toggleAtt(student,session){
   if(!isSheikhMode)return;
-  const att=getAtt();const k=`${student}__${session}`;
-  att[k]=att[k]==='present'?'absent':att[k]==='absent'?undefined:'present';
-  if(att[k]===undefined)delete att[k];
-  save(K.ATT,att);loadAttendance();
+  const key=`${student}__${session}`.replace(/\./g,'_');
+  const att={...getAtt()};
+  const cur=att[key];
+  const next=cur==='present'?'absent':cur==='absent'?null:'present';
+  if(next===null){delete att[key];if(window._fb)window._fb.DB.attendance=att;await fbRemove(`attendance/${key}`);}
+  else{att[key]=next;if(window._fb)window._fb.DB.attendance=att;await fbSet(`attendance/${key}`,next);}
+  loadAttendance();
 }
 function loadAttendance(){
   const students=getStudents(),sessions=getSessions(),att=getAtt();
   const thead=document.getElementById('attHead'),tbody=document.getElementById('attBody');
   const fmt=d=>new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  if(!sessions.length){thead.innerHTML='<tr><th>Student</th><th style="color:var(--muted)">No sessions yet</th></tr>';tbody.innerHTML='';return}
+  if(!sessions.length){
+    thead.innerHTML='<tr><th>Student</th><th style="color:var(--muted)">No sessions yet</th></tr>';
+    tbody.innerHTML='';return;
+  }
   thead.innerHTML=`<tr><th>Student</th>${sessions.map(s=>`<th style="text-align:center">${fmt(s)}</th>`).join('')}<th>Rate</th>${isSheikhMode?'<th></th>':''}</tr>`;
   tbody.innerHTML=students.map(st=>{
-    const pres=sessions.filter(s=>att[`${st}__${s}`]==='present').length;
-    const marked=sessions.filter(s=>att[`${st}__${s}`]!==undefined).length;
+    const key=s=>`${st}__${s}`.replace(/\./g,'_');
+    const pres=sessions.filter(s=>att[key(s)]==='present').length;
+    const marked=sessions.filter(s=>att[key(s)]!==undefined).length;
     const rate=marked>0?Math.round(pres/marked*100):null;
     return`<tr><td><strong>${st}</strong></td>${sessions.map(s=>{
-      const v=att[`${st}__${s}`];
+      const v=att[key(s)];
       return`<td class="att-cell"><button class="att-btn ${v==='present'?'present':v==='absent'?'absent':'empty'}" ${isSheikhMode?`onclick="toggleAtt('${st}','${s}')"`:''}>${v==='present'?'✓':v==='absent'?'✗':'·'}</button></td>`;
     }).join('')}<td>${rate!==null?`<span class="badge ${rate>=80?'badge-green':rate>=50?'badge-gold':'badge-red'}">${rate}%</span>`:'—'}</td>${isSheikhMode?`<td><button class="btn-ghost btn-sm btn" style="font-size:0.68rem" onclick="removeStudent('${st}')">remove</button></td>`:''}</tr>`;
   }).join('');
@@ -652,14 +734,12 @@ function getWeekKey(date){
   const d=new Date(date),sun=new Date(d);
   sun.setDate(d.getDate()-d.getDay());return sun.toISOString().split('T')[0];
 }
-function addDays(dateOrStr,n){const d=typeof dateOrStr==='string'?new Date(dateOrStr+'T00:00:00'):new Date(dateOrStr);d.setDate(d.getDate()+n);return d}
+function addDays(x,n){const d=typeof x==='string'?new Date(x+'T00:00:00'):new Date(x);d.setDate(d.getDate()+n);return d}
 
 function buildCalendar(){
   const cal=getCal(),today=getWeekKey(new Date());
   const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   const fmtLong=d=>d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-
-  // On Fridays, show NEXT week's assignment at the top
   const isFriday=new Date().getDay()===5;
   const bannerKey=isFriday?getWeekKey(addDays(today,7)):today;
   const bannerStart=new Date(bannerKey+'T00:00:00');
@@ -667,8 +747,7 @@ function buildCalendar(){
   document.getElementById('cwDates').textContent=`${fmtLong(bannerStart)} – ${fmt(bannerEnd)}`;
   const cwa=cal[bannerKey];
   const cwSurah=cwa?SURAHS.find(s=>s.n===cwa.surahNum):null;
-  const bannerLabel=isFriday?'📅 Next Week':'📅 This Week';
-  document.getElementById('cwBanner').querySelector('.cwb-label').textContent=bannerLabel;
+  document.getElementById('cwLabel').textContent=isFriday?'📅 Next Week':'📅 This Week';
   if(cwa&&cwSurah){
     document.getElementById('cwAssign').textContent=`${cwSurah.name} — Ayahs ${cwa.fromAyah}–${cwa.toAyah}`;
     document.getElementById('cwAr').textContent=`${cwSurah.ar} ${cwa.fromAyah}–${cwa.toAyah}`;
@@ -676,27 +755,21 @@ function buildCalendar(){
     document.getElementById('cwAssign').innerHTML='<span class="cwb-empty">No assignment set yet</span>';
     document.getElementById('cwAr').textContent='';
   }
-  // Edit button targets the correct week
   document.getElementById('cwEditBtn').onclick=()=>openAssignModal(bannerKey);
-
   document.getElementById('calYear').textContent=calYear;
   document.getElementById('calHint').textContent=isSheikhMode?'Click any week to set or edit assignment':'';
-
-  // Build weeks for year, grouped by month
   const months={};
   let d=new Date(calYear,0,1);
   while(d.getDay()!==0)d.setDate(d.getDate()+1);
   while(true){
-    const sun=new Date(d);
-    if(sun.getFullYear()>calYear)break;
+    const sun=new Date(d);if(sun.getFullYear()>calYear)break;
     const sat=new Date(d);sat.setDate(sat.getDate()+6);
     const key=sun.toISOString().split('T')[0];
-    const monthKey=sun.toLocaleDateString('en-US',{month:'long',year:'numeric'});
-    if(!months[monthKey])months[monthKey]=[];
-    months[monthKey].push({key,sun,sat});
+    const mk=sun.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    if(!months[mk])months[mk]=[];
+    months[mk].push({key,sun,sat});
     d.setDate(d.getDate()+7);
   }
-
   document.getElementById('calMonths').innerHTML=Object.entries(months).map(([month,weeks])=>`
     <div class="cal-month">
       <div class="cal-month-hdr">${month}</div>
@@ -714,14 +787,11 @@ function buildCalendar(){
         }).join('')}
       </div>
     </div>`).join('');
-
-  // Scroll current week into view
   setTimeout(()=>{
     const curEl=document.querySelector('.cal-cell.current-week');
     if(curEl)curEl.scrollIntoView({behavior:'smooth',block:'center'});
   },100);
 }
-
 function changeYear(d){calYear+=d;buildCalendar()}
 function editCurrentWeek(){openAssignModal(getWeekKey(new Date()))}
 
@@ -742,14 +812,17 @@ function openAssignModal(key){
   document.getElementById('assignModal').classList.add('open');
 }
 function closeAssignModal(){document.getElementById('assignModal').classList.remove('open');openWeekKey=null}
-function saveWeekAssignment(){
+async function saveWeekAssignment(){
   const sn=parseInt(document.getElementById('assignSurah').value),from=parseInt(document.getElementById('assignFrom').value),to=parseInt(document.getElementById('assignTo').value);
   const surah=SURAHS.find(s=>s.n===sn);
   if(!surah||from<1||to<from||to>surah.ayahs){showToast('Check ayah range');return}
-  const cal=getCal();cal[openWeekKey]={surahNum:sn,fromAyah:from,toAyah:to};save(K.CAL,cal);
-  closeAssignModal();buildCalendar();showToast('Saved!');
+  await fbSet(`calendar/${openWeekKey}`,{surahNum:sn,fromAyah:from,toAyah:to});
+  closeAssignModal();showToast('Saved!');
 }
-function clearWeekAssignment(){const cal=getCal();delete cal[openWeekKey];save(K.CAL,cal);closeAssignModal();buildCalendar();showToast('Cleared')}
+async function clearWeekAssignment(){
+  await fbRemove(`calendar/${openWeekKey}`);
+  closeAssignModal();showToast('Cleared');
+}
 document.getElementById('assignModal').addEventListener('click',e=>{if(e.target===document.getElementById('assignModal'))closeAssignModal()});
 
 // ═══ MANAGE ═══
@@ -759,22 +832,25 @@ function buildStudentList(){
     ?students.map(s=>`<div class="student-item"><span class="sname">${s}</span><button class="btn btn-sm" style="background:var(--red-pale);color:var(--red);border:none" onclick="removeStudent('${s}')">Remove</button></div>`).join('')
     :'<p style="font-size:0.82rem;color:var(--muted)">No students yet.</p>';
 }
-function addStudent(){
+async function addStudent(){
   const name=document.getElementById('newStudentName').value.trim();if(!name)return;
-  const students=getStudents();if(students.includes(name)){showToast('Already in list');return}
-  students.push(name);save(K.STUDENTS,students);
-  document.getElementById('newStudentName').value='';
-  buildStudentList();buildStudentFilter();loadAttendance();buildLoginDropdown();showToast(`${name} added`);
+  if(getStudents().includes(name)){showToast('Already in list');return}
+  const students=[...getStudents(),name];
+  await fbSet('students', students.reduce((o,s,i)=>{o[i]=s;return o},{}));
+  document.getElementById('newStudentName').value='';showToast(`${name} added`);
 }
-function removeStudent(name){
+document.getElementById('newStudentName').addEventListener('keydown',e=>{if(e.key==='Enter')addStudent()});
+async function removeStudent(name){
   if(!confirm(`Remove ${name}?`))return;
-  save(K.STUDENTS,getStudents().filter(s=>s!==name));
-  buildStudentList();buildStudentFilter();loadAttendance();buildLoginDropdown();showToast(`${name} removed`);
+  const students=getStudents().filter(s=>s!==name);
+  await fbSet('students', students.length?students.reduce((o,s,i)=>{o[i]=s;return o},{}):null);
+  await fbRemove(`mistakes/${name}`);
+  showToast(`${name} removed`);
 }
 function changePin(){
   const pin=document.getElementById('newPinInput').value.trim();
   if(pin.length<4){showToast('PIN must be 4+ digits');return}
-  save(K.PIN,pin);document.getElementById('newPinInput').value='';showToast('PIN updated');
+  savePin(pin);document.getElementById('newPinInput').value='';showToast('PIN updated');
 }
 
 // ═══ TOAST ═══

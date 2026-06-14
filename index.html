@@ -323,7 +323,8 @@ function setSaved(){  const d=document.getElementById('syncDot'); d.classList.ad
 // Subscribe — any change in Firebase updates DB and re-renders
 db.ref('students').on('value', snap => {
   DB.students = snap.exists() ? Object.values(snap.val()) : [];
-  if(window._ready){ buildStudentFilter(); buildStudentList(); buildLoginDropdown(); loadAttendance(); }
+  buildLoginDropdown(); // always update dropdown, even on login screen
+  if(window._ready){ buildStudentFilter(); buildStudentList(); loadAttendance(); }
 });
 db.ref('mistakes').on('value', snap => {
   DB.mistakes = snap.exists() ? snap.val() : {};

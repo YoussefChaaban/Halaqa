@@ -578,7 +578,8 @@ async function loadMushafPage(num){
 }
 
 function renderPage(data,num){
-  const mistakeWords=getMistakes()[currentStudent]||[];
+  const mistakes = window._fb ? window._fb.DB.mistakes : {};
+  const mistakeWords=mistakes[currentStudent]||[];
   let firstSurah='';
   data.lines.forEach(l=>{if(l.type==='surah-header'&&!firstSurah)firstSurah=l.text});
   if(!firstSurah){
@@ -611,7 +612,8 @@ function renderPage(data,num){
 }
 
 function refreshHighlights(){
-  const mistakeWords=getMistakes()[currentStudent]||[];
+  const mistakes = window._fb ? window._fb.DB.mistakes : {};
+  const mistakeWords=mistakes[currentStudent]||[];
   document.querySelectorAll('.qword').forEach(el=>{
     el.classList.toggle('wrd-mistake',mistakeWords.includes(el.dataset.loc));
   });
@@ -626,17 +628,15 @@ document.getElementById('mushafBook').addEventListener('click',function(e){
   const student=currentStudent||document.getElementById('quranStudentFilter').value;
   if(!student){showToast('Select a student first');return}
   const loc=el.dataset.loc;if(!loc)return;
-  // optimistic update
-  const mistakes={...getMistakes()};
-  const words=[...(mistakes[student]||[])];
+  // Read directly from DB (guaranteed to be the live Firebase data)
+  const DB = window._fb ? window._fb.DB : {mistakes:{}};
+  const words=[...(DB.mistakes[student]||[])];
   const idx=words.indexOf(loc);
   if(idx===-1){words.push(loc);el.classList.add('wrd-mistake')}
   else{words.splice(idx,1);el.classList.remove('wrd-mistake')}
-  mistakes[student]=words;
-  if(window._fb) window._fb.DB.mistakes=mistakes; // update local copy instantly
+  DB.mistakes[student]=words;
   renderMistakePanel();
-  // persist to Firebase
-  fbSet(`mistakes/${student}`, words.length ? words : null);
+  fbSet('mistakes/'+student, words.length ? words : null);
 });
 
 function toggleMarkMode(){
@@ -652,7 +652,8 @@ function toggleMarkMode(){
 }
 
 function renderMistakePanel(){
-  const all=getMistakes()[currentStudent]||[];
+  const mistakes = window._fb ? window._fb.DB.mistakes : {};
+  const all=mistakes[currentStudent]||[];
   const el=document.getElementById('mistakeList');
   if(all.length===0){el.innerHTML='<p style="font-size:0.78rem;color:var(--muted)">No mistakes recorded. ماشاء الله</p>';return}
   const byAyah={};

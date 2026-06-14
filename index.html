@@ -363,12 +363,12 @@ const db    = getDatabase(fbApp);
 function setSyncing(){ document.getElementById('syncDot').className='sdot syncing'; document.getElementById('syncLabel').textContent='saving…'; }
 function setSynced(){  document.getElementById('syncDot').className='sdot'; document.getElementById('syncLabel').textContent='synced'; }
 
-async function fbSet(path, val){
+async function _fbSet(path, val){
   setSyncing();
   await set(ref(db, path), val);
   setSynced();
 }
-async function fbRemove(path){
+async function _fbRemove(path){
   setSyncing();
   await remove(ref(db, path));
   setSynced();
@@ -400,7 +400,7 @@ onValue(ref(db,'calendar'), snap=>{
 });
 
 // Expose Firebase ops to global scope so non-module functions can use them
-window._fb = { set: fbSet, remove: fbRemove, DB };
+window._fb = { set: _fbSet, remove: _fbRemove, DB };
 
 // Show sync badge once app is open
 window._showSyncBadge = () => { document.getElementById('syncBadge').style.display='flex'; };

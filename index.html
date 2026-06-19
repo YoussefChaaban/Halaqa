@@ -69,30 +69,29 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .qline{
   font-family:'Scheherazade New','Amiri Quran',serif;
   font-size:1.45rem;
-  line-height:2.5;
+  line-height:2.6;
   text-align:justify;
   text-align-last:center;
   direction:rtl;
   color:#1a0a00;
   display:block;
   white-space:nowrap;
-  overflow:hidden;
 }
 .qline.assignment-line{background:rgba(30,140,100,0.06);border-radius:3px}
-/* Ayah number circles */
+/* Ayah number circles — like a printed Quran */
 .ayah-num{
   display:inline-flex;align-items:center;justify-content:center;
-  width:1.5rem;height:1.5rem;
-  border:1.5px solid #b8934a;
+  width:1.65em;height:1.65em;
+  border:1.5px solid #9a7030;
   border-radius:50%;
   font-family:'Scheherazade New','Amiri',serif;
-  font-size:0.78rem;
-  color:#8a6010;
-  margin:0 2px;
+  font-size:0.7em;
+  color:#7a5010;
+  margin:0 0.15em;
   vertical-align:middle;
   line-height:1;
-  flex-shrink:0;
-  background:#fffdf8;
+  background:rgba(255,248,235,0.9);
+  box-shadow:0 0 0 1px rgba(180,130,50,0.2);
 }
 .qword{display:inline;cursor:default;border-radius:3px;padding:1px 1px;transition:background 0.08s;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .qword.wrd-mistake{background:rgba(190,30,30,0.18);color:#7a0000;border-radius:3px;border-bottom:2px solid rgba(190,30,30,0.55)}
@@ -544,7 +543,13 @@ async function loadMushafPage(num){
 }
 var ARABIC_NUM_MAP={'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
 function toWesternNum(s){return s.split('').map(function(c){return ARABIC_NUM_MAP[c]!==undefined?ARABIC_NUM_MAP[c]:c}).join('')}
-function isAyahNumWord(w){return /^[\u0660-\u0669\u06F0-\u06F9]+$/.test(w.trim())}
+// Ayah numbers are appended to the last word e.g. "قَدِيرٌ ١"
+// Split word text and trailing ayah number apart
+function splitAyahNum(word){
+  var m=word.match(/^(.*?)\s*([٠-٩۰-۹]+)\s*$/);
+  if(m&&m[2]){return{text:m[1],num:toWesternNum(m[2])};}
+  return{text:word,num:null};
+}
 function renderPage(data,num){
   var mistakeWords=DB.mistakes[currentStudent]||[];
   var firstSurah='';
@@ -564,11 +569,13 @@ function renderPage(data,num){
       html+='<div class="qline'+(isAssign?' assignment-line':'')+'">';
       if(line.words&&line.words.length){
         line.words.forEach(function(w){
-          if(isAyahNumWord(w.word)){
-            html+='<span class="ayah-num">'+toWesternNum(w.word.trim())+'</span>';
-          }else{
-            var isMistake=mistakeWords.indexOf(w.location)!==-1;
-            html+='<span class="qword'+(isMistake?' wrd-mistake':'')+'" data-loc="'+w.location+'">'+w.word+' </span>';
+          var split=splitAyahNum(w.word);
+          var isMistake=mistakeWords.indexOf(w.location)!==-1;
+          if(split.text){
+            html+='<span class="qword'+(isMistake?' wrd-mistake':'')+'" data-loc="'+w.location+'">'+split.text+' </span>';
+          }
+          if(split.num){
+            html+='<span class="ayah-num">'+split.num+'</span> ';
           }
         });
       }else{

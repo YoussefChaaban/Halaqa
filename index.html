@@ -518,10 +518,11 @@ function buildStudentFilter(){
   const sel=document.getElementById('quranStudentFilter');
   const prev=sel.value;
   sel.innerHTML='';
+  sel.disabled=false;
   if(!DB.students.length){sel.innerHTML='<option value="">No students yet</option>';return}
   DB.students.forEach(s=>sel.innerHTML+=`<option value="${s}">${s}</option>`);
   if(prev&&DB.students.includes(prev))sel.value=prev;
-  if(!isSheikhMode){sel.value=currentUser;sel.disabled=true}
+  if(!isSheikhMode){sel.value=currentUser;sel.disabled=true;}
   buildLoginDropdown();
 }
 function onStudentFilterChange(){

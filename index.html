@@ -66,9 +66,35 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .mhdr-surah,.mhdr-juz{font-family:'Scheherazade New','Amiri',serif;font-size:0.82rem;color:#8a6010}
 .surah-hdr{text-align:center;font-family:'Scheherazade New','Amiri',serif;font-size:0.95rem;color:#8a6010;padding:0 0 0.6rem;margin-bottom:0.4rem}
 .basmala{text-align:center;font-family:'Scheherazade New','Amiri Quran',serif;font-size:2rem;color:#1a0a00;margin:0 0 0.75rem;line-height:1.6;direction:rtl}
-.qline{font-family:'Scheherazade New','Amiri Quran',serif;font-size:1.6rem;line-height:2.6;text-align:center;direction:rtl;color:#1a0a00;display:block;padding:0;word-spacing:0.1em}
-.qline.assignment-line{background:rgba(30,140,100,0.07);border-radius:3px}
-.qword{display:inline;cursor:default;border-radius:3px;padding:2px 2px;transition:background 0.08s;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.qline{
+  font-family:'Scheherazade New','Amiri Quran',serif;
+  font-size:1.45rem;
+  line-height:2.5;
+  text-align:justify;
+  text-align-last:center;
+  direction:rtl;
+  color:#1a0a00;
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+}
+.qline.assignment-line{background:rgba(30,140,100,0.06);border-radius:3px}
+/* Ayah number circles */
+.ayah-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:1.5rem;height:1.5rem;
+  border:1.5px solid #b8934a;
+  border-radius:50%;
+  font-family:'Scheherazade New','Amiri',serif;
+  font-size:0.78rem;
+  color:#8a6010;
+  margin:0 2px;
+  vertical-align:middle;
+  line-height:1;
+  flex-shrink:0;
+  background:#fffdf8;
+}
+.qword{display:inline;cursor:default;border-radius:3px;padding:1px 1px;transition:background 0.08s;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .qword.wrd-mistake{background:rgba(190,30,30,0.18);color:#7a0000;border-radius:3px;border-bottom:2px solid rgba(190,30,30,0.55)}
 .mark-mode-active .qword{cursor:crosshair}
 .mark-mode-active .qword:hover{background:rgba(210,170,30,0.22)}
@@ -141,7 +167,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
   .page-content{padding:1rem}.topbar{padding:0 1rem}.topbar .brand{font-size:1rem}
   .user-pill{font-size:0.68rem;padding:2px 8px}
   .mushaf-book{padding:1.25rem 1rem 1rem}.mushaf-book::before{inset:6px}
-  .basmala{font-size:1.3rem}.qline{font-size:1.05rem;line-height:2.3}.mushaf-footer-num{font-size:0.8rem}
+  .basmala{font-size:1.25rem}.qline{font-size:0.95rem;line-height:2.2;white-space:nowrap}.mushaf-footer-num{font-size:0.8rem}
   .quran-toolbar{flex-direction:column;align-items:stretch;gap:0.5rem}
   .tf-group{flex-direction:row;align-items:center;gap:0.5rem}
   .tf-label{white-space:nowrap;min-width:80px}
@@ -516,15 +542,18 @@ async function loadMushafPage(num){
     document.getElementById('mushafContent').innerHTML='<div class="loading">Could not load — check your connection.</div>';
   }
 }
+var ARABIC_NUM_MAP={'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
+function toWesternNum(s){return s.split('').map(function(c){return ARABIC_NUM_MAP[c]!==undefined?ARABIC_NUM_MAP[c]:c}).join('')}
+function isAyahNumWord(w){return /^[\u0660-\u0669\u06F0-\u06F9]+$/.test(w.trim())}
 function renderPage(data,num){
-  const mistakeWords=DB.mistakes[currentStudent]||[];
-  let firstSurah='';
-  data.lines.forEach(l=>{if(l.type==='surah-header'&&!firstSurah)firstSurah=l.text});
+  var mistakeWords=DB.mistakes[currentStudent]||[];
+  var firstSurah='';
+  data.lines.forEach(function(l){if(l.type==='surah-header'&&!firstSurah)firstSurah=l.text});
   if(!firstSurah){
-    const t=data.lines.find(l=>l.type==='text'&&l.verseRange);
-    if(t){const sn=parseInt(t.verseRange.split(':')[0]);const s=SURAHS.find(x=>x.n===sn);if(s)firstSurah=s.ar}
+    var t=data.lines.find(function(l){return l.type==='text'&&l.verseRange});
+    if(t){var sn=parseInt(t.verseRange.split(':')[0]);var s=SURAHS.filter(function(x){return x.n===sn})[0];if(s)firstSurah=s.ar}
   }
-  let html='<div class="mushaf-top-bar"><span class="mhdr-surah">'+firstSurah+'</span><span class="mhdr-juz"></span></div>';
+  var html='<div class="mushaf-top-bar"><span class="mhdr-surah">'+firstSurah+'</span><span class="mhdr-juz"></span></div>';
   data.lines.forEach(function(line){
     if(line.type==='surah-header'){
       html+='<div class="surah-hdr">'+line.text+'</div>';
@@ -532,16 +561,20 @@ function renderPage(data,num){
       html+='<div class="basmala">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>';
     }else if(line.type==='text'){
       var isAssign=lineIsAssignment(line.verseRange);
+      html+='<div class="qline'+(isAssign?' assignment-line':'')+'">';
       if(line.words&&line.words.length){
-        html+='<div class="qline'+(isAssign?' assignment-line':'')+'\">';
         line.words.forEach(function(w){
-          var isMistake=mistakeWords.indexOf(w.location)!==-1;
-          html+='<span class="qword'+(isMistake?' wrd-mistake':'')+'" data-loc="'+w.location+'">'+w.word+' </span>';
+          if(isAyahNumWord(w.word)){
+            html+='<span class="ayah-num">'+toWesternNum(w.word.trim())+'</span>';
+          }else{
+            var isMistake=mistakeWords.indexOf(w.location)!==-1;
+            html+='<span class="qword'+(isMistake?' wrd-mistake':'')+'" data-loc="'+w.location+'">'+w.word+' </span>';
+          }
         });
-        html+='</div>';
       }else{
-        html+='<div class="qline'+(isAssign?' assignment-line':'')+'">'+line.text+'</div>';
+        html+=line.text;
       }
+      html+='</div>';
     }
   });
   document.getElementById('mushafContent').innerHTML=html;
